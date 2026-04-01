@@ -1,11 +1,25 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Outputs from './pages/Outputs';
+import Clients from './pages/Clients';
+import ClientGallery from './pages/ClientGallery';
 
 const App = () => {
   return (
-    <div>
-      <h1>Welcome to Stuart Photography</h1>
-      <p>Your one-stop solution for all your photography needs.</p>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/about' element={<About/>}/>
+        <Route path='/outputs' element={<Outputs/>}/>
+        <Route path='/clients' element={<Clients/>}/>
+        <Route path='/client/:id' element={<ClientGallery/>}/>
+        <Route path='/contact' element={<Contact/>}/>
+      </Routes>
+    </BrowserRouter>
   );
 };
 
