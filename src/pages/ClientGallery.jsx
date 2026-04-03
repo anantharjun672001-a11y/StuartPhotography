@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { client } from '../data/client';
+import { useParams } from 'react-router-dom';
 
 const ClientGallery = () => {
 
     const {id} = useParams();
-    const clients = client.find(c=> c.id === id);
+    const currentClient = client.find(c=> c.id === id);
 
     const[entered,setEntered] = useState( );
-    const [acess,setAccess] = useState(false);
+    const [access,setAccess] = useState(false);
 
-    if(!clients)return <p>Client Not Found</p>
+    if(!currentClient)return <p>Client Not Found</p>
 
-    if(!acess){
+    if(!access){
 
     return (
         <div className='p-6'>
