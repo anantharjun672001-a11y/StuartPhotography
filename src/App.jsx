@@ -6,6 +6,7 @@ import About from './pages/About';
 import Outputs from './pages/Outputs';
 import Clients from './pages/Clients';
 import ClientGallery from './pages/ClientGallery';
+import Contact from './pages/Contact';
 
 const App = () => {
   return (
