@@ -1,16 +1,18 @@
-import React, { useState } from "react";
-import { client } from "../data/client";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
 const ClientGallery = () => {
   const { id } = useParams();
-  const currentClient = client.find((c) => c.id === id);
+
+  const storedClients = JSON.parse(localStorage.getItem("clients")) || [];
+  const currentClient = storedClients.find((c) => c.id === id);
 
   const [entered, setEntered] = useState("");
   const [access, setAccess] = useState(false);
 
+  // 🔥 Download All
   const downloadAll = async () => {
     const zip = new JSZip();
 
@@ -24,8 +26,30 @@ const ClientGallery = () => {
     saveAs(content, `${currentClient.name}.zip`);
   };
 
+  // 🔥 Delete Image
+  const handleDeleteImage = (indexToDelete) => {
+    const storedClients = JSON.parse(localStorage.getItem("clients")) || [];
+
+    const updated = storedClients.map((c) => {
+      if (c.id === id) {
+        const newImages = c.images.filter((_, i) => i !== indexToDelete);
+
+        return {
+          ...c,
+          images: newImages,
+          coverImage: newImages[0] || "",
+        };
+      }
+      return c;
+    });
+
+    localStorage.setItem("clients", JSON.stringify(updated));
+    window.location.reload();
+  };
+
   if (!currentClient) return <p>Client Not Found</p>;
 
+  // 🔐 Password screen
   if (!access) {
     return (
       <div className="p-6">
@@ -50,7 +74,7 @@ const ClientGallery = () => {
 
   return (
     <div className="p-6">
-
+      {/* 🔥 Download All */}
       <button
         onClick={downloadAll}
         className="mb-6 bg-green-600 text-white px-4 py-2 rounded"
@@ -58,13 +82,14 @@ const ClientGallery = () => {
         Download All
       </button>
 
+      {/* Gallery */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {currentClient.images.map((img, i) => (
           <div key={i} className="relative group">
-
+            {/* Image */}
             <img
               src={img}
-              className="w-full h-60 object-cover rounded"
+              className="w-full h-60 object-cover rounded transform group-hover:scale-105 transition duration-300"
             />
 
             {/* Watermark */}
@@ -78,15 +103,25 @@ const ClientGallery = () => {
             <a
               href={img}
               download
-              className="absolute bottom-2 right-2 bg-black text-white px-2 py-1 text-sm opacity-0 group-hover:opacity-100"
+              className="absolute bottom-2 right-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 hover:scale-105 transition duration-300"
             >
               Download
             </a>
 
+            {/* 🔥 Delete */}
+            <button
+              onClick={() => {
+                if (confirm("Delete this image?")) {
+                  handleDeleteImage(i);
+                }
+              }}
+              className="danger bg-black text-white px-4 py-2 rounded hover:bg-gray-800 hover:scale-105 transition duration-300"
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
-
     </div>
   );
 };
