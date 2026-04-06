@@ -25,10 +25,10 @@ const Navbar = () => {
 
       <div className="flex gap-6 text-white font-poppins">
         <a href="/landing">Home</a>
-        <a href="#clients">Clients</a>
-        <a href="#outputs">Outputs</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="/clients">Clients</a>
+        <a href="/outputs">Outputs</a>
+        <a href="">About</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   );

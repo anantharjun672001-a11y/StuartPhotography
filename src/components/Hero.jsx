@@ -4,16 +4,18 @@ const Hero = () => {
   return (
     <div className="relative h-screen w-full overflow-hidden">
 
-      {/* VIDEO */}
       <video
         src={heroVideo}
         autoPlay
         loop
+        muted
+        playsInline
         className="absolute w-full h-full object-cover"
       />
 
-      {/* OVERLAY */}
-      <div className="absolute w-full h-full bg-black/50"></div>
+      {/* overlay gradient  */}
+      <div className="absolute w-full h-full bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
+
     </div>
   );
 };
