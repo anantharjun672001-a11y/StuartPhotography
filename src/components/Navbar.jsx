@@ -1,33 +1,41 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  const isLanding = location.pathname === "/landing"; // landing check
 
   useEffect(() => {
-    window.addEventListener("scroll", () => {
+    const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-    });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div
-      className={`fixed w-full top-0 z-50 px-6 py-4 flex justify-between items-center transition duration-300 
-      ${scrolled ? "bg-black shadow-lg" : "bg-transparent"}`}
+      className={`fixed w-full top-0 z-50 px-8 py-10 flex justify-between items-center transition duration-300 
+      
+      ${
+        isLanding
+          ? scrolled
+            ? "bg-black shadow-lg"
+            : "bg-transparent"
+          : "bg-black shadow-lg" 
+      }
+      
+      `}
     >
-      {/* LOGO (IMPROVED) */}
-      <div className="flex items-center">
-        <img
-          src="/images/logo_white.png"
-          alt="Logo"
-          className="h-12 md:h-14 w-auto object-contain"
-        />
-      </div>
+      <img src="/images/logo_white.png" className="w-28" />
 
-      <div className="flex gap-6 text-white font-poppins">
+      <div className="hidden md:flex gap-6 text-white">
         <a href="/landing">Home</a>
         <a href="/clients">Clients</a>
         <a href="/outputs">Outputs</a>
-        <a href="">About</a>
         <a href="/contact">Contact</a>
       </div>
     </div>

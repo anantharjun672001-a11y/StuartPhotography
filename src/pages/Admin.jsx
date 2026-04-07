@@ -1,8 +1,17 @@
 import { useState, useEffect } from "react";
 import { uploadToCloudinary } from "../utils/cloudinary";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import axios from "axios";
+
+const API = import.meta.env.VITE_API_URL;
 
 const Admin = () => {
+  const isAuth = localStorage.getItem("isAdmin");
+
+  if (!isAuth) {
+    return <Navigate to="/admin-login" />;
+  }
+
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [images, setImages] = useState([]);
@@ -14,19 +23,12 @@ const Admin = () => {
   const editId = params.get("edit");
 
   useEffect(() => {
-    const isAuth = localStorage.getItem("adminAuth");
-    if (!isAuth) navigate("/admin-login");
-  }, []);
-
-  useEffect(() => {
     if (editId) {
-      const stored = JSON.parse(localStorage.getItem("clients")) || [];
-      const found = stored.find((c) => c.id === editId);
-
-      if (found) {
-        setName(found.name);
-        setPassword(found.password);
-      }
+      axios.get(`${API}/api/clients/${editId}`)
+        .then(res => {
+          setName(res.data.name);
+          setPassword(res.data.password);
+        });
     }
   }, [editId]);
 
@@ -43,87 +45,101 @@ const Admin = () => {
       uploadedUrls.push(url);
     }
 
-    const existing = JSON.parse(localStorage.getItem("clients")) || [];
-
-    if (editId) {
-      const updated = existing.map((c) =>
-        c.id === editId
-          ? {
-              ...c,
-              name,
-              password,
-              images:
-                uploadedUrls.length > 0
-                  ? [...c.images, ...uploadedUrls]
-                  : c.images,
-            }
-          : c
-      );
-
-      localStorage.setItem("clients", JSON.stringify(updated));
-      alert("Updated 🔥");
-    } else {
-      const newClient = {
-        id: name.toLowerCase().replace(/\s/g, ""),
+    try {
+      await axios.post(`${API}/api/clients`, {
         name,
         password,
         coverImage: uploadedUrls[0],
         images: uploadedUrls,
-      };
+      });
 
-      existing.push(newClient);
-      localStorage.setItem("clients", JSON.stringify(existing));
+      alert(editId ? "Updated " : "Saved ");
 
-      alert("Saved 🔥");
+      setName("");
+      setPassword("");
+      setImages([]);
+
+    } catch (err) {
+      console.log(err);
+      alert("Upload failed ");
     }
-
-    setName("");
-    setPassword("");
-    setImages([]);
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-black via-[#0B0F19] to-black text-white flex items-center justify-center px-4">
 
-      <button
-        onClick={() => {
-          localStorage.removeItem("adminAuth");
-          navigate("/admin-login");
-        }}
-        className="mb-4 bg-red-500 text-white px-4 py-2 w-full"
-      >
-        Logout
-      </button>
+      {/* CARD */}
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl shadow-2xl hover:shadow-[#D4AF37]/20 transition">
 
-      <h2 className="text-xl font-bold mb-4">Admin Upload</h2>
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-playfair">
+            {editId ? "Edit Client" : "Upload Client"}
+          </h2>
 
-      <input
-        placeholder="Client Name"
-        className="border p-2 mb-2 w-full"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+          <button
+            onClick={() => {
+              localStorage.removeItem("isAdmin");
+              navigate("/admin-login");
+            }}
+            className="bg-red-500/80 px-4 py-1 rounded-full text-sm hover:bg-red-600 hover:scale-105 transition shadow-md"
+          >
+            Logout
+          </button>
+        </div>
 
-      <input
-        placeholder="Password"
-        className="border p-2 mb-2 w-full"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <div className="space-y-5">
 
-      <input
-        type="file"
-        multiple
-        className="mb-4"
-        onChange={(e) => setImages([...e.target.files])}
-      />
+          {/* NAME */}
+          <input
+            type="text"
+            placeholder="Client Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 bg-black/40 border border-gray-600 rounded-lg focus:outline-none focus:border-[#D4AF37] placeholder-gray-400"
+          />
 
-      <button
-        onClick={handleUpload}
-        className="bg-black text-white px-4 py-2 w-full"
-      >
-        {editId ? "Update Client" : "Upload Client"}
-      </button>
+          {/* PASSWORD */}
+          <input
+            type="text"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 bg-black/40 border border-gray-600 rounded-lg focus:outline-none focus:border-[#D4AF37] placeholder-gray-400"
+          />
+
+          {/* FILE INPUT */}
+          <div className="bg-black/40 border border-gray-600 rounded-lg p-4 text-center hover:border-[#D4AF37] transition">
+            <input
+              type="file"
+              multiple
+              onChange={(e) => setImages([...e.target.files])}
+              className="hidden"
+              id="fileUpload"
+            />
+            <label htmlFor="fileUpload" className="cursor-pointer">
+              📁 Select Images
+            </label>
+
+            {images.length > 0 && (
+              <p className="text-sm text-gray-400 mt-2">
+                {images.length} file(s) selected
+              </p>
+            )}
+          </div>
+
+          {/* BUTTON */}
+          <button
+            onClick={handleUpload}
+            className="w-full bg-gradient-to-r from-[#D4AF37] to-yellow-500 text-black py-3 rounded-xl font-semibold hover:scale-105 hover:shadow-lg hover:shadow-[#D4AF37]/40 transition"
+          >
+            {editId ? "Update Client" : "Upload Client"}
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };

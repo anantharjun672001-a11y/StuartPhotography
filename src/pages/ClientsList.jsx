@@ -1,81 +1,95 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
+import axios from "axios";
+
+const API = import.meta.env.VITE_API_URL;
 
 const ClientsList = () => {
   const [search, setSearch] = useState("");
   const [clientsData, setClientsData] = useState([]);
   const navigate = useNavigate();
 
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("clients")) || [];
-    setClientsData(data);
+    axios.get(`${API}/api/clients`).then((res) => setClientsData(res.data));
   }, []);
 
   const filtered = clientsData.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const handleDelete = (id) => {
-    const existing = JSON.parse(localStorage.getItem("clients")) || [];
-
-    const updated = existing.filter((c) => c.id !== id);
-
-    localStorage.setItem("clients", JSON.stringify(updated));
-
-    setClientsData(updated);
+  const handleDelete = async (id) => {
+    await axios.delete(`${API}/api/clients/${id}`);
+    setClientsData((prev) => prev.filter((c) => c._id !== id));
   };
+
   return (
-    <div className="p-6">
-      <input
-        type="text"
-        placeholder="Search clients..."
-        className="border p-2 w-full mb-6"
-        onChange={(e) => setSearch(e.target.value)}
-      />
+    <Layout>
+      <div className="bg-[#0B0F19] text-white min-h-screen py-20 px-6">
+        <h1 className="text-4xl md:text-5xl text-center mb-10 font-playfair">
+          Client Galleries
+        </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {filtered.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => navigate(`/clients/${item.id}`)}
-            className="cursor-pointer group bg-white/10 backdrop-blur-lg p-2 rounded-xl shadow-lg hover:scale-105 transition duration-300"
-          >
-            <div className="relative">
-              <img
-                src={item.coverImage}
-                className="w-full h-40 object-cover rounded"
-              />
+        {/* SEARCH */}
+        <div className="max-w-xl mx-auto mb-10">
+          <input
+            type="text"
+            placeholder="Search clients..."
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-5 py-3 rounded-full bg-white text-black placeholder-gray-500 focus:outline-none"
+          />
+        </div>
 
-              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <p className="text-white font-bold">View</p>
+        {/* GRID */}
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6">
+          {filtered.map((item) => (
+            <div
+              key={item._id}
+              onClick={() => navigate(`/clients/${item._id}`)}
+              className="group cursor-pointer rounded-xl overflow-hidden bg-white/5 backdrop-blur-lg hover:scale-105 transition"
+            >
+              {/* IMAGE */}
+              <div className="bg-black flex items-center justify-center p-2">
+                <img
+                  src={item.coverImage}
+                  className="w-full max-h-52 object-contain"
+                />
               </div>
+
+              {/* NAME */}
+              <h3 className="text-center py-3 font-semibold">{item.name}</h3>
+
+              {/* ADMIN BUTTONS */}
+              {isAdmin && (
+                <div className="flex justify-center gap-3 pb-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/admin?edit=${item._id}`);
+                    }}
+                    className="px-3 py-1 bg-blue-500 rounded hover:scale-110 transition"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(item._id);
+                    }}
+                    className="px-3 py-1 bg-red-500 rounded hover:scale-110 transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
-
-            <h3 className="mt-2 text-center font-semibold">{item.name}</h3>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/admin?edit=${item.id}`);
-              }}
-              className="mt-2 bg-blue-500 text-white px-2 py-1 text-sm rounded ml-2"
-            >
-              Edit
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); // click open aagatha prevent
-                handleDelete(item.id);
-              }}
-              className="mt-2 bg-red-500 text-white px-2 py-1 text-sm rounded"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

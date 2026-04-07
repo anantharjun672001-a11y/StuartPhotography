@@ -5,8 +5,11 @@ const images = [
   "/images/b2.jpeg",
   "/images/d1.jpeg",
   "/images/d2.jpeg",
-  "/images/e1.jpeg",
-  "/images/e2.jpeg",
+  "/images/raju.jpeg",
+  "/images/raju1.jpeg",
+  "/images/girl.jpeg",
+  "/images/girl15.jpeg",
+  "/images/raju4.jpeg",
 ];
 
 const ClientSlider = () => {

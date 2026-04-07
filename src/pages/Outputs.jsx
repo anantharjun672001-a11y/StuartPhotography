@@ -74,7 +74,7 @@ const Outputs = () => {
                   className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
                 />
 
-                {/* HOVER EFFECT 🔥 */}
+                {/* HOVER EFFECT */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                   <p className="text-white text-lg font-semibold opacity-0 group-hover:opacity-100 transition">
                     View
@@ -86,7 +86,7 @@ const Outputs = () => {
 
         </div>
 
-        {/* MODAL 🔥 */}
+        {/* MODAL */}
         {selectedImg && (
           <div
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
