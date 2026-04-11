@@ -18,18 +18,21 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div
-      className={`fixed w-full top-0 z-50 px-6 md:px-10 py-10 flex justify-between items-center transition duration-300
-      
-      ${
-        isLanding
-          ? scrolled
-            ? "bg-black shadow-lg"
-            : "bg-transparent"
-          : "bg-black shadow-lg"
-      }
-      `}
-    >
+  <div
+    className={`fixed w-full top-0 z-50 transition duration-300
+    
+    ${
+      isLanding
+        ? scrolled
+          ? "bg-black shadow-lg"
+          : "bg-transparent"
+        : "bg-black shadow-lg"
+    }
+    `}
+  >
+    {/* INNER CONTAINER */}
+    <div className="max-w-7xl mx-auto px-6 md:px-8 py-10 flex justify-between items-center">
+
       {/* Logo */}
       <img src="/images/logo_white.png" className="w-24 md:w-28" />
 
@@ -43,22 +46,22 @@ const Navbar = () => {
 
       {/* Mobile Hamburger */}
       <div className="md:hidden text-white text-2xl cursor-pointer">
-        <button onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
+        <button onClick={() => setMenuOpen(!menuOpen)}>☰</button>
       </div>
-
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="absolute top-full left-0 w-full bg-black text-white flex flex-col items-center gap-6 py-6 md:hidden shadow-lg">
-          <a href="/landing" onClick={() => setMenuOpen(false)}>Home</a>
-          <a href="/clients" onClick={() => setMenuOpen(false)}>Clients</a>
-          <a href="/outputs" onClick={() => setMenuOpen(false)}>Outputs</a>
-          <a href="/contact" onClick={() => setMenuOpen(false)}>Contact</a>
-        </div>
-      )}
     </div>
-  );
+
+    {/* Mobile Menu */}
+    {menuOpen && (
+      <div className="absolute top-full left-0 w-full bg-black text-white flex flex-col items-center gap-6 py-6 md:hidden shadow-lg">
+        <a href="/landing" onClick={() => setMenuOpen(false)}>Home</a>
+        <a href="/clients" onClick={() => setMenuOpen(false)}>Clients</a>
+        <a href="/outputs" onClick={() => setMenuOpen(false)}>Outputs</a>
+        <a href="/contact" onClick={() => setMenuOpen(false)}>Contact</a>
+      </div>
+    )}
+  </div>
+);
+
 };
 
 export default Navbar;
