@@ -1,4 +1,4 @@
-import { FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaEnvelope, FaYoutube } from "react-icons/fa";
 
 const Contact = () => {
   return (
@@ -31,6 +31,11 @@ const Contact = () => {
           <a href="mailto:Stuartphotography21@gmail.com">
             <FaEnvelope className="text-[#D4AF37] hover:scale-125 transition" />
           </a>
+
+          <a href="https://youtube.com/@stuartphotographystudio?si=yY2Y1wOmNAAmcRFk" target="_blank">
+
+          <FaYoutube className="text-red-500 hover:scale-125 transition" />
+        </a>
 
         </div>
 

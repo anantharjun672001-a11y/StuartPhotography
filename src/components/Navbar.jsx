@@ -3,9 +3,10 @@ import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); 
   const location = useLocation();
 
-  const isLanding = location.pathname === "/landing"; // landing check
+  const isLanding = location.pathname === "/landing";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,26 +19,44 @@ const Navbar = () => {
 
   return (
     <div
-      className={`fixed w-full top-0 z-50 px-8 py-10 flex justify-between items-center transition duration-300 
+      className={`fixed w-full top-0 z-50 px-6 md:px-10 py-10 flex justify-between items-center transition duration-300
       
       ${
         isLanding
           ? scrolled
             ? "bg-black shadow-lg"
             : "bg-transparent"
-          : "bg-black shadow-lg" 
+          : "bg-black shadow-lg"
       }
-      
       `}
     >
-      <img src="/images/logo_white.png" className="w-28" />
+      {/* Logo */}
+      <img src="/images/logo_white.png" className="w-24 md:w-28" />
 
-      <div className="hidden md:flex gap-6 text-white">
-        <a href="/landing">Home</a>
-        <a href="/clients">Clients</a>
-        <a href="/outputs">Outputs</a>
-        <a href="/contact">Contact</a>
+      {/* Desktop Menu */}
+      <div className="hidden md:flex gap-8 text-white font-medium">
+        <a href="/landing" className="hover:text-gray-300 transition">Home</a>
+        <a href="/clients" className="hover:text-gray-300 transition">Clients</a>
+        <a href="/outputs" className="hover:text-gray-300 transition">Outputs</a>
+        <a href="/contact" className="hover:text-gray-300 transition">Contact</a>
       </div>
+
+      {/* Mobile Hamburger */}
+      <div className="md:hidden text-white text-2xl cursor-pointer">
+        <button onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="absolute top-full left-0 w-full bg-black text-white flex flex-col items-center gap-6 py-6 md:hidden shadow-lg">
+          <a href="/landing" onClick={() => setMenuOpen(false)}>Home</a>
+          <a href="/clients" onClick={() => setMenuOpen(false)}>Clients</a>
+          <a href="/outputs" onClick={() => setMenuOpen(false)}>Outputs</a>
+          <a href="/contact" onClick={() => setMenuOpen(false)}>Contact</a>
+        </div>
+      )}
     </div>
   );
 };

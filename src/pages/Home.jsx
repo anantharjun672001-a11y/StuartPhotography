@@ -37,12 +37,6 @@ const Home = () => {
             Explore Gallery
           </button>
         </Link>
-
-        <Link to="/outputs">
-          <button className="border border-[#D4AF37] px-6 py-3 rounded-full hover:bg-[#D4AF37] hover:text-black transition">
-            View Works
-          </button>
-        </Link>
       </motion.div>
 
       {/* PREVIEW IMAGES */}

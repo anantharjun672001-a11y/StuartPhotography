@@ -1,4 +1,4 @@
-import { FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaEnvelope , FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -44,6 +44,16 @@ const Footer = () => {
           className="hover:scale-110 transition"
         >
           <FaEnvelope className="text-[#D4AF37]" />
+        </a>
+
+        {/* YouTube */}
+        <a
+          href="https://youtube.com/@stuartphotographystudio?si=yY2Y1wOmNAAmcRFk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:scale-110 transition"
+        >
+          <FaYoutube className="text-red-500" />
         </a>
 
       </div>
